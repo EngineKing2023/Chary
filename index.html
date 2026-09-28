@@ -31,28 +31,32 @@
 		
 		
 		
-			document.documentElement.classList.toggle("is-phone", /Android|iPhone|iPad|iPod|Windows Phone|Mobile/i.test(navigator.userAgent));
+			const isPhoneUserAgent = /Android|iPhone|iPad|iPod|Windows Phone|Mobile/i.test(navigator.userAgent);
+			const isPhoneViewport = window.matchMedia("(max-width: 900px), (orientation: landscape) and (max-height: 520px)").matches;
+			document.documentElement.classList.toggle("is-phone", isPhoneUserAgent || isPhoneViewport);
 		</script>
 	</head>
 	<body>
 		<main class="split-screen">
 			<section class="identity-section">
-				<p class="site-name">Chary</p>
-				<img class="profile-image" src="images/taxilogo.png" alt="Taxi logo">
-				
-				<div class="service-copy" lang="sl">
-					<!-- SEO POPRAVEK: Tukaj je sedaj glavni H1 naslov z vašo glavno ključno besedo -->
-					<h1 class="service-copy__title">Izdelava spletnih strani po meri</h1>
-					
-					<p class="service-copy__lead"><strong>Potrebujete čisto, hitro in varno spletno stran?</strong> 👋</p>
-					<p>Spletne strani izdelujem po meri, neposredno s pisanjem kode. To pomeni <strong>nič skritih stroškov</strong>—brez dragih WordPress vtičnikov, mesečnih naročnin ali varnostnih tveganj. Dobite visoko zmogljivo stran, ki je 100-odstotno vaša.</p>
-					
-					<ul class="service-points">
-						<li>🔹 <strong>Cena:</strong> Od <strong>200 €</strong> naprej (ne vključuje domene in gostovanja)</li>
-						<li>🔹 <strong>Pogodba:</strong> Vse poteka pravno in transparentno preko <strong>avtorske pogodbe</strong></li>
-					</ul>
+				<div class="identity-content">
+					<p class="site-name">Chary</p>
+					<img class="profile-image" src="images/taxilogo.png" alt="Taxi logo">
+
+					<div class="service-copy" lang="sl">
+						<!-- SEO POPRAVEK: Tukaj je sedaj glavni H1 naslov z vašo glavno ključno besedo -->
+						<h1 class="service-copy__title">Izdelava spletnih strani po meri</h1>
+
+						<p class="service-copy__lead"><strong>Potrebujete čisto, hitro in varno spletno stran?</strong> 👋</p>
+						<p>Spletne strani izdelujem po meri, neposredno s pisanjem kode. To pomeni <strong>nič skritih stroškov</strong>—brez dragih WordPress vtičnikov, mesečnih naročnin ali varnostnih tveganj. Dobite visoko zmogljivo stran, ki je 100-odstotno vaša.</p>
+
+						<ul class="service-points">
+							<li>🔹 <strong>Cena:</strong> Od <strong>200 €</strong> naprej (ne vključuje domene in gostovanja)</li>
+							<li>🔹 <strong>Pogodba:</strong> Vse poteka pravno in transparentno preko <strong>avtorske pogodbe</strong></li>
+						</ul>
+					</div>
+					<p class="phone-number">☎ +38664188332</p>
 				</div>
-				<p class="phone-number">☎ +38664188332</p>
 			</section>
 			
 			<section class="contact-section" aria-labelledby="contact-title">
@@ -104,10 +108,10 @@
 				<a class="mobile-action mobile-action--viber" href="viber://chat?number=%2B38664188332" aria-label="Odpri Viber">
 					<img class="mobile-action__image" data-image-slot="viber" src="images/viber.png" alt="Viber">
 				</a>
-				<button class="mobile-action mobile-action--discord" type="button" aria-label="Povezava Discord ni nastavljena">
+				<a class="mobile-action mobile-action--discord" href="https://discord.com/users/833741996694175816" target="_blank" rel="noopener noreferrer" aria-label="Odpri Discord profil">
 					<img class="mobile-action__image" data-image-slot="discord" src="images/logo-discord.png" alt="Discord">
 					<span class="mobile-action__fallback" aria-hidden="true">D</span>
-				</button>
+				</a>
 				<a class="mobile-action mobile-action--whatsapp" href="https://wa.me/38664188332" target="_blank" rel="noopener noreferrer" aria-label="Odpri WhatsApp">
 					<img class="mobile-action__image" data-image-slot="whatsapp" src="images/logo-whatsapp.png" alt="WhatsApp">
 					<span class="mobile-action__fallback" aria-hidden="true">W</span>
@@ -128,6 +132,16 @@
 			const closeButton = document.querySelector("#mobile-close-button");
 			const contactSection = document.querySelector(".contact-section");
 			const contactContent = document.querySelector(".contact-content");
+			const identitySection = document.querySelector(".identity-section");
+			const identityContent = document.querySelector(".identity-content");
+
+			const fitIdentityContent = () => {
+				identityContent.style.transform = "scale(1)";
+				const styles = getComputedStyle(identitySection);
+				const availableHeight = identitySection.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
+				const scale = Math.min(1, availableHeight / identityContent.scrollHeight);
+				identityContent.style.transform = `scale(${scale})`;
+			};
 
 			const setContactVisibility = () => {
 				const isFormOpen = contactSection.classList.contains("is-form-open");
@@ -163,6 +177,9 @@
 			});
 
 			mobileViewport.addEventListener("change", resetMobileActions);
+			window.addEventListener("resize", fitIdentityContent);
+			window.addEventListener("load", fitIdentityContent);
+			fitIdentityContent();
 			setContactVisibility();
 		</script>
 	</body>
